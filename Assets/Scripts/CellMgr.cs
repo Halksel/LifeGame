@@ -44,13 +44,28 @@ public class CellMgr : SingletonMonoBehaviour<CellMgr> {
 		if(Input.GetKeyDown(KeyCode.E)){
 			StopAllCoroutines ();  
 		}
+		if(Input.GetKeyDown(KeyCode.C)){
+			AllCellDie();
+		}
+		for (int x = 0; x < xGridSize; ++x) {
+			for (int y = 0; y < yGridSize; ++y) {
+				cells[x,y].Sync();
+			}
+		}
 	}
 
 	void NextTurn(){
 		for (int x = 0; x < xGridSize; ++x) {
 			for (int y = 0; y < yGridSize; ++y) {
 				cells [x, y].PastTurn ();
-				cells [x, y].StartTurn ();
+			}
+		}
+	}
+
+	void AllCellDie(){
+		for (int x = 0; x < xGridSize; ++x) {
+			for (int y = 0; y < yGridSize; ++y) {
+				cells[x,y].Die();
 			}
 		}
 	}

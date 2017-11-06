@@ -37,6 +37,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4211744259060788}
+  - component: {fileID: 114983771208788662}
   m_Layer: 0
   m_Name: Cells
   m_TagString: Untagged
@@ -70,7 +71,7 @@ Transform:
   m_GameObject: {fileID: 1281824308456018}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_Children:
   - {fileID: 4645987553797000}
   - {fileID: 4940609090436668}
@@ -205,3 +206,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &114983771208788662
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1281824308456018}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37a07f3ccb8c94e1cadc34f33ead31f1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  aliveCube: {fileID: 1949713190930422}
+  deadCube: {fileID: 1082586812061058}
+  isAlive: 0
+  x: 0
+  y: 0

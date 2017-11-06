@@ -9,7 +9,6 @@ public class Cell : MonoBehaviour {
 
 	[SerializeField]
 	private bool isAlive;
-	public bool isPastAlive {set; get;}
 	public int x,y;
 
 	void Awake () {  
@@ -21,12 +20,15 @@ public class Cell : MonoBehaviour {
 		x = _x;
 		y = _y;
 		isAlive = _isAlive;
-		isPastAlive = _isAlive;
-		StartTurn();
+		if(isAlive){
+			Birth();
+		}
+		else{
+			Die();
+		}
 	}
 	// Use this for initialization
 	void Start () {
-				
 	}
 	
 	// Update is called once per frame
@@ -37,14 +39,14 @@ public class Cell : MonoBehaviour {
 
 			if (Physics.Raycast(ray, out hit)){  
 				Cell cell = hit.collider.gameObject.transform.parent.GetComponent<Cell>();  
-
-				if (cell.isAlive) {  
-					cell.Die ();  
-					cell.isPastAlive = false;
-				} else {  
-					cell.Birth ();  
-					cell.isPastAlive = true;
-				}  
+				if (cell != null) {
+					Debug.Log(x.ToString()+ "," + y.ToString());
+					if (cell.isAlive) {  
+						cell.Die ();  
+					} else {  
+						cell.Birth ();  
+					}
+				}
 			}  
 		}
 	}
@@ -56,34 +58,25 @@ public class Cell : MonoBehaviour {
 			for(int dy = -1; dy <= 1;++dy){
 				if(dx == 0 && dy == 0) continue;
 				int nx = x + dx,ny = y + dy;
-				if(cellMgr.IsValue(nx,ny) && cells[nx,ny].isPastAlive){
+				if(cellMgr.IsValue(nx,ny) && cells[nx,ny].isAlive){
 					++count;
 				}
 			}
 		}
-		if(isPastAlive){ // 前ターン生存なら
+		if(isAlive){ // 前ターン生存なら
 			if(count == 2 || count == 3){
-				isAlive = true;	
+				Birth();
 			}
 			else{
-				isAlive = false;
+				Die();
 			}
 		}
 		else{
 			if(count == 3){
-				isAlive = true;
+				Birth();
 			}
 		}
 		return false;
-	}
-	public void StartTurn(){
-		isPastAlive = isAlive;
-		if(isAlive){
-			Birth();			
-		}
-		else{
-			Die();
-		}
 	}
 	public void Birth() {  
 		deadCube.SetActive (false);  
@@ -93,4 +86,7 @@ public class Cell : MonoBehaviour {
 		deadCube.SetActive (true);  
 		aliveCube.SetActive (false);  
 	} 
+	public void Sync(){
+		isAlive = aliveCube.activeSelf;	
+	}
 }
