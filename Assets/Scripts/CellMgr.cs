@@ -14,8 +14,9 @@ public class CellMgr : SingletonMonoBehaviour<CellMgr> {
  	override protected void Awake(){
 		base.Awake();
 		Init();
+		StopAllCoroutines ();  
 	}
-	private void Init(){
+	public void Init(){
 		cells = new Cell[xGridSize,yGridSize];
 		for(int x = 0; x < xGridSize; ++x){
 			for(int y = 0; y < yGridSize;++y){
@@ -39,7 +40,7 @@ public class CellMgr : SingletonMonoBehaviour<CellMgr> {
 			NextTurn();
 		}
 		if(Input.GetKeyDown(KeyCode.S)){
-			StartCoroutine(NextTurnCoroutine());
+			Start();
 		}
 		if(Input.GetKeyDown(KeyCode.E)){
 			StopAllCoroutines ();  
@@ -53,8 +54,10 @@ public class CellMgr : SingletonMonoBehaviour<CellMgr> {
 			}
 		}
 	}
-
-	void NextTurn(){
+	public void Start(){
+		StartCoroutine (NextTurnCoroutine ());
+	}
+	public void NextTurn(){
 		for (int x = 0; x < xGridSize; ++x) {
 			for (int y = 0; y < yGridSize; ++y) {
 				cells [x, y].PastTurn ();
@@ -62,12 +65,23 @@ public class CellMgr : SingletonMonoBehaviour<CellMgr> {
 		}
 	}
 
-	void AllCellDie(){
+	public void AllCellDie(){
 		for (int x = 0; x < xGridSize; ++x) {
 			for (int y = 0; y < yGridSize; ++y) {
 				cells[x,y].Die();
 			}
 		}
+	}
+	public void Restart(){
+		for (int x = 0; x < xGridSize; ++x) {
+			for (int y = 0; y < yGridSize; ++y) {
+				cells[x,y].Init(x,y,Random.Range(0f,100f) < 25f);
+			}
+		}
+	}
+	public void Edit(){
+		StopAllCoroutines();
+
 	}
 
 	IEnumerator NextTurnCoroutine(){
