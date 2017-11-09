@@ -64,17 +64,23 @@ public class Cell : MonoBehaviour {
 			}
 		}
 		if(isAlive){ // 前ターン生存なら
-			if(count == 2 || count == 3){
-				Birth();
+			bool[] birth = cellMgr.birth;
+			bool flag = false;
+			for(int i = 0; i < 10; ++i){
+				if(i == count)
+					flag |= birth[i];
 			}
-			else{
-				Die();
-			}
+			if(flag) Birth();
+			else 	 Die();
 		}
 		else{
-			if(count == 3){
-				Birth();
+			bool[] death = cellMgr.death;
+			bool flag = false;
+			for (int i = 0; i < 10; ++i) {
+				if(i == count)
+					flag |= death [i];
 			}
+			if(flag) Birth();
 		}
 		return false;
 	}

@@ -10,6 +10,10 @@ public class CellMgr : SingletonMonoBehaviour<CellMgr> {
 	public float turnInterval = 0.5f;
 	public Cell[,] cells;
 	public GameObject cell;
+	public bool[] birth ;
+	public bool[] death ;
+	[SerializeField]
+	private GameObject editorBase;
 
  	override protected void Awake(){
 		base.Awake();
@@ -81,7 +85,7 @@ public class CellMgr : SingletonMonoBehaviour<CellMgr> {
 	}
 	public void Edit(){
 		StopAllCoroutines();
-
+		editorBase.SetActive(!editorBase.activeSelf);
 	}
 
 	IEnumerator NextTurnCoroutine(){
