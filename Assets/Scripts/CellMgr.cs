@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CellMgr : SingletonMonoBehaviour<CellMgr> {
 
@@ -12,13 +13,19 @@ public class CellMgr : SingletonMonoBehaviour<CellMgr> {
 	public GameObject cell;
 	public bool[] birth ;
 	public bool[] death ;
+	public int generationCounter = 0;
 	[SerializeField]
 	private GameObject editorBase;
+	[SerializeField]
+	private Text infoText ;
+	IEnumerator gameCoroutine;
+
 
  	override protected void Awake(){
 		base.Awake();
 		Init();
-		StopAllCoroutines ();  
+		StopAllCoroutines ();
+		gameCoroutine = NextTurnCoroutine();
 	}
 	public void Init(){
 		cells = new Cell[xGridSize,yGridSize];
@@ -47,7 +54,7 @@ public class CellMgr : SingletonMonoBehaviour<CellMgr> {
 			Start();
 		}
 		if(Input.GetKeyDown(KeyCode.E)){
-			StopAllCoroutines ();  
+			End();
 		}
 		if(Input.GetKeyDown(KeyCode.C)){
 			AllCellDie();
@@ -59,7 +66,7 @@ public class CellMgr : SingletonMonoBehaviour<CellMgr> {
 		}
 	}
 	public void Start(){
-		StartCoroutine (NextTurnCoroutine ());
+		StartCoroutine (gameCoroutine);
 	}
 	public void NextTurn(){
 		for (int x = 0; x < xGridSize; ++x) {
@@ -67,6 +74,24 @@ public class CellMgr : SingletonMonoBehaviour<CellMgr> {
 				cells [x, y].PastTurn ();
 			}
 		}
+		++generationCounter;
+		infoText.text = "Generation : " + generationCounter.ToString() + "\n" + "Birth : ";
+		for(int i = 0; i < 10;++i){
+			if(birth[i]) infoText.text += i.ToString()+ ",";
+		}
+		infoText.text += "\nDeath : " ;
+		for(int i = 0; i < 10;++i){
+			if(death[i]) infoText.text += i.ToString() + ",";
+		}
+	}
+	IEnumerator NextTurnCoroutine(){
+		while(true){
+			NextTurn ();
+			yield return new WaitForSeconds (turnInterval);
+		}
+	}
+	public void End(){
+		StopCoroutine(gameCoroutine);
 	}
 
 	public void AllCellDie(){
@@ -77,6 +102,7 @@ public class CellMgr : SingletonMonoBehaviour<CellMgr> {
 		}
 	}
 	public void Restart(){
+		generationCounter = 0;
 		for (int x = 0; x < xGridSize; ++x) {
 			for (int y = 0; y < yGridSize; ++y) {
 				cells[x,y].Init(x,y,Random.Range(0f,100f) < 25f);
@@ -88,10 +114,4 @@ public class CellMgr : SingletonMonoBehaviour<CellMgr> {
 		editorBase.SetActive(!editorBase.activeSelf);
 	}
 
-	IEnumerator NextTurnCoroutine(){
-		while(true){
-			NextTurn ();
-			yield return new WaitForSeconds (turnInterval);
-		}
-	}
 }

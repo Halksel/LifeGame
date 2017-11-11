@@ -37,14 +37,15 @@ public class Cell : MonoBehaviour {
 			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);  
 			RaycastHit hit = new RaycastHit();  
 
-			if (Physics.Raycast(ray, out hit)){  
-				Cell cell = hit.collider.gameObject.transform.parent.GetComponent<Cell>();  
-				if (cell != null) {
-					Debug.Log(x.ToString()+ "," + y.ToString());
-					if (cell.isAlive) {  
-						cell.Die ();  
-					} else {  
-						cell.Birth ();  
+			if (Physics.Raycast(ray, out hit)){ 
+				if (hit.collider.gameObject.transform.parent && hit.collider.gameObject.transform.parent.GetComponent<Cell>()) {
+					Cell cell = hit.collider.gameObject.transform.parent.GetComponent<Cell> ();  
+					if (cell != null) {
+						if (cell.isAlive) {  
+							cell.Die ();  
+						} else {  
+							cell.Birth ();  
+						}
 					}
 				}
 			}  
