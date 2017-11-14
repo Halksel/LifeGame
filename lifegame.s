@@ -183,6 +183,11 @@ COPYAREA:
   addq.w    #1,     %d0
   cmp       #AREASIZE ,%d0
   bcs COPYAREA
+  move.l    #SYSCALL_NUM_PUTSTRING,     %d0
+  move.l    #0,                         %d1 | ch = 0
+  move.l    #GAME_AREA,                 %d2 | p  = GAME_AREA 
+  move.l    #256,                       %d3 | size = 8
+  trap      #0
   movem.l   (%sp)+,%d0-%d7/%a0-%a6
   rts
 
@@ -237,10 +242,10 @@ FOR_J_FINISH:
   cmp       #'1',       %d0  /* k 番目のマスが生存しているかどうか*/
   bne       DEAD
   move.w    %d7,        %d0   /* AAAA k の復活  */
-*** 生存しているなら
-  cmp       #2,         %d1
-  beq       BIRTH
+*** 生存しているなら 上で自分もカウントしているため、23/3ライフゲームではあるが34で判定を行なっている
   cmp       #3,         %d1
+  beq       BIRTH
+  cmp       #4,         %d1
   beq       BIRTH
   bra       DIE
 
@@ -345,32 +350,6 @@ acc:
   move.b    (%a0),         %d0
   movem.l   (%sp)+,%d1-%d7/%a0-%a6
   rts
-  
-
-**************************************
-***タイマのテスト
-**************************************
-TT:
-  movem.l   %d0-%d7/%a0-%a6,-(%sp)
-  cmpi.w    #5,                         TTC | TTCカウンタで5回実行したかどうか数える
-  beq       TTKILL 
-
-  move.l    #SYSCALL_NUM_PUTSTRING,     %d0
-  move.l    #0,                         %d1 | ch = 0
-  move.l    #TMSG,                      %d2 | p  = size 
-  move.l    #8,                         %d3 | size = 8
-  trap      #0
-
-  addi.w    #1,                         TTC | TTCカウンタを1つ増やして
-  bra       TTEND                           | そのままもどる
-
-TTKILL:
-  move.l    #SYSCALL_NUM_RESET_TIMER,   %d0
-  trap      #0
-
-TTEND:
-  movem.l   (%sp)+,%d0-%d7/%a0-%a6
-  rts
 
 GAME_START:
   movem.l   %d0-%d7/%a0-%a6,-(%sp)
@@ -382,7 +361,7 @@ WAIT_START:
   trap      #0
   move.l    #'s',                       %d0
   move.w    %d2,                        %a2
-  cmp       (%a2),                        %d0
+  cmp       (%a2),                      %d0
   bne       WAIT_START
   movem.l   (%sp)+,%d0-%d7/%a0-%a6
   rts
